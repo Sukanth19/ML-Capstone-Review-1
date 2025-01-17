@@ -369,8 +369,9 @@ def get_regression_models():
 
 # Main Application
 def main():
-    st.markdown('<h1 class="main-header">🎓 ML Capstone Project</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align: center; font-size: 1.2rem;">Team TASKMASTERS (Team 16) | 23CSE301 Machine Learning</p>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🎓 Machine Learning Capstone Project 🚀</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">✨ Team TASKMASTERS (Team 16) | 23CSE301 Machine Learning ✨</p>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; color: #718096; font-size: 0.95rem; margin-bottom: 2rem;">Powered by Advanced ML Algorithms | Interactive Analytics Dashboard</p>', unsafe_allow_html=True)
     
     # Sidebar navigation
     st.sidebar.title("Navigation")
