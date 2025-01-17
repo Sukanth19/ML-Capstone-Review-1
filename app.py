@@ -58,32 +58,161 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS for enhanced visual appeal
 st.markdown("""
 <style>
+    /* Main container styling */
+    .main {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    /* Header styling with gradient */
     .main-header {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #1f77b4;
+        font-size: 3.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         text-align: center;
-        margin-bottom: 2rem;
-    }
-    .sub-header {
-        font-size: 1.5rem;
-        color: #ff7f0e;
-        margin-top: 2rem;
         margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        letter-spacing: -1px;
     }
+    
+    /* Subtitle styling */
+    .subtitle {
+        text-align: center;
+        font-size: 1.3rem;
+        color: #4a5568;
+        margin-bottom: 2rem;
+        font-weight: 500;
+    }
+    
+    /* Sub-header with gradient border */
+    .sub-header {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #f093fb;
+    }
+    
+    /* Enhanced metric cards with shadows */
     .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+        padding: 1.5rem;
+        border-radius: 15px;
         margin: 0.5rem 0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+    
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    /* Styled buttons with gradient */
     .stButton>button {
         width: 100%;
-        background-color: #1f77b4;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        transform: translateY(-2px);
+    }
+    
+    /* Enhanced sidebar */
+    .css-1d391kg {
+        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Info boxes with gradient borders */
+    .stInfo {
+        background-color: #e6f3ff;
+        border-left: 5px solid #667eea;
+        border-radius: 8px;
+    }
+    
+    .stSuccess {
+        background-color: #e6ffe6;
+        border-left: 5px solid #4caf50;
+        border-radius: 8px;
+    }
+    
+    .stError {
+        background-color: #ffe6e6;
+        border-left: 5px solid #f44336;
+        border-radius: 8px;
+    }
+    
+    /* Enhanced dataframe styling */
+    .dataframe {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Card containers for modules */
+    .module-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        margin: 1rem 0;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        position: relative;
+    }
+    
+    .module-card::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        z-index: -1;
+        margin: -2px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    /* Progress bar styling */
+    .stProgress > div > div > div > div {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    
+    /* Metric value styling */
+    [data-testid="stMetricValue"] {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    /* Radio button styling */
+    .stRadio > label {
+        font-weight: 600;
+        color: #2d3748;
     }
 </style>
 """, unsafe_allow_html=True)
