@@ -58,161 +58,136 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for enhanced visual appeal
+# Professional CSS styling
 st.markdown("""
 <style>
-    /* Main container styling */
+    /* Clean, modern main container */
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background-color: #ffffff;
     }
     
-    /* Header styling with gradient */
+    /* Professional header */
     .main-header {
-        font-size: 3.5rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #1a202c;
         text-align: center;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        letter-spacing: -1px;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
     }
     
-    /* Subtitle styling */
+    /* Subtle subtitle */
     .subtitle {
         text-align: center;
-        font-size: 1.3rem;
-        color: #4a5568;
-        margin-bottom: 2rem;
-        font-weight: 500;
-    }
-    
-    /* Sub-header with gradient border */
-    .sub-header {
-        font-size: 2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-top: 2rem;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 3px solid #f093fb;
-    }
-    
-    /* Enhanced metric cards with shadows */
-    .metric-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        margin: 0.5rem 0;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border: 1px solid rgba(255,255,255,0.6);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-    }
-    
-    /* Styled buttons with gradient */
-    .stButton>button {
-        width: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-weight: 600;
-        border: none;
-        border-radius: 10px;
-        padding: 0.75rem 1.5rem;
         font-size: 1.1rem;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        transition: all 0.3s ease;
+        color: #718096;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+    }
+    
+    /* Clean section headers */
+    .sub-header {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    /* Minimalist buttons */
+    .stButton>button {
+        background-color: #4299e1;
+        color: white;
+        font-weight: 500;
+        border: none;
+        border-radius: 6px;
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        transition: background-color 0.2s ease;
     }
     
     .stButton>button:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        transform: translateY(-2px);
+        background-color: #3182ce;
     }
     
-    /* Enhanced sidebar */
-    .css-1d391kg {
-        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    /* Info boxes with gradient borders */
+    /* Clean info boxes */
     .stInfo {
-        background-color: #e6f3ff;
-        border-left: 5px solid #667eea;
-        border-radius: 8px;
+        background-color: #ebf8ff;
+        border-left: 4px solid #4299e1;
+        border-radius: 4px;
+        padding: 1rem;
     }
     
     .stSuccess {
-        background-color: #e6ffe6;
-        border-left: 5px solid #4caf50;
-        border-radius: 8px;
+        background-color: #f0fff4;
+        border-left: 4px solid #48bb78;
+        border-radius: 4px;
+        padding: 1rem;
     }
     
-    .stError {
-        background-color: #ffe6e6;
-        border-left: 5px solid #f44336;
-        border-radius: 8px;
+    .stWarning {
+        background-color: #fffaf0;
+        border-left: 4px solid #ed8936;
+        border-radius: 4px;
+        padding: 1rem;
     }
     
-    /* Enhanced dataframe styling */
+    /* Professional dataframes */
     .dataframe {
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
     }
     
-    /* Card containers for modules */
-    .module-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        margin: 1rem 0;
-        border: 2px solid transparent;
-        background-clip: padding-box;
-        position: relative;
-    }
-    
-    .module-card::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0; bottom: 0; left: 0;
-        z-index: -1;
-        margin: -2px;
-        border-radius: inherit;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-    }
-    
-    /* Progress bar styling */
-    .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    /* Expander styling */
-    .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-        border-radius: 10px;
-        font-weight: 600;
-    }
-    
-    /* Metric value styling */
+    /* Clean metric styling */
     [data-testid="stMetricValue"] {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #667eea;
-    }
-    
-    /* Radio button styling */
-    .stRadio > label {
+        font-size: 1.8rem;
         font-weight: 600;
         color: #2d3748;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        font-size: 0.9rem;
+        color: #718096;
+        font-weight: 500;
+    }
+    
+    /* Subtle progress bar */
+    .stProgress > div > div > div > div {
+        background-color: #4299e1;
+    }
+    
+    /* Professional expander */
+    .streamlit-expanderHeader {
+        background-color: #f7fafc;
+        border-radius: 4px;
+        font-weight: 500;
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Clean radio buttons */
+    .stRadio > label {
+        font-weight: 500;
+        color: #2d3748;
+        font-size: 0.95rem;
+    }
+    
+    /* Sidebar styling */
+    section[data-testid="stSidebar"] {
+        background-color: #f7fafc;
+        border-right: 1px solid #e2e8f0;
+    }
+    
+    /* Clean typography */
+    h1, h2, h3, h4 {
+        color: #2d3748;
+        font-weight: 600;
+    }
+    
+    p {
+        color: #4a5568;
+        line-height: 1.6;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -369,69 +344,47 @@ def get_regression_models():
 
 # Main Application
 def main():
-    st.markdown('<h1 class="main-header">🎓 Machine Learning Capstone Project 🚀</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">✨ Team TASKMASTERS (Team 16) | 23CSE301 Machine Learning ✨</p>', unsafe_allow_html=True)
-    st.markdown("""
-    <div style='text-align: center; margin-bottom: 2rem;'>
-        <p style='color: #718096; font-size: 0.95rem; margin: 0;'>
-        🔬 Powered by Advanced ML Algorithms | 📊 Interactive Analytics Dashboard
-        </p>
-        <p style='color: #a0aec0; font-size: 0.85rem; margin: 0.25rem 0 0 0;'>
-        Featuring Classification • Regression • Clustering Analysis
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">Machine Learning Capstone Project</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Team TASKMASTERS (Team 16) • 23CSE301 Machine Learning</p>', unsafe_allow_html=True)
     
-    # Enhanced sidebar navigation with styling
-    st.sidebar.markdown("""
-    <div style='text-align: center; padding: 1rem 0;'>
-        <h1 style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                   -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-                   font-size: 2rem; margin: 0;'>🎯 Navigation</h1>
-    </div>
-    """, unsafe_allow_html=True)
+    # Clean sidebar navigation
+    st.sidebar.header("Navigation")
     
     page = st.sidebar.radio(
-        "Select Module:",
-        ["🏠 Home", "🎾 Classification (Tennis)", "⛳ Regression (Golf)", "🔍 Clustering Analysis"]
+        "Select Module",
+        ["🏠 Home", "🎾 Classification", "⛳ Regression", "🔍 Clustering"],
+        label_visibility="collapsed"
     )
     
-    # Add sidebar footer with info
     st.sidebar.markdown("---")
-    st.sidebar.markdown("""
-    <div style='padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 2rem;'>
-        <h4 style='color: white; margin: 0;'>💡 Quick Info</h4>
-        <p style='color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 0.5rem;'>
-        This app demonstrates ML algorithms for classification, regression, and clustering tasks.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.sidebar.markdown("### About")
+    st.sidebar.info("""
+    **ML Capstone Project**
+    
+    This application demonstrates machine learning algorithms for:
+    - Tennis match prediction
+    - Golf score prediction  
+    - Match clustering analysis
+    """)
     
     if page == "🏠 Home":
         show_home()
-    elif page == "🎾 Classification (Tennis)":
+    elif page == "🎾 Classification":
         show_classification()
-    elif page == "⛳ Regression (Golf)":
+    elif page == "⛳ Regression":
         show_regression()
-    elif page == "🔍 Clustering Analysis":
+    elif page == "🔍 Clustering":
         show_clustering()
 
 
 def show_home():
     """Home page with project overview"""
-    st.markdown('<div class="sub-header">📊 Project Overview</div>', unsafe_allow_html=True)
+    st.header("Project Overview")
     
-    # Add welcome message with gradient box
     st.markdown("""
-    <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                padding: 2rem; border-radius: 20px; color: white; text-align: center; 
-                margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);'>
-        <h2 style='margin: 0; font-weight: 700;'>Welcome to ML Capstone Dashboard! 🚀</h2>
-        <p style='margin-top: 1rem; font-size: 1.1rem; opacity: 0.95;'>
-        Explore powerful machine learning algorithms through interactive visualizations and real-time analysis
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    This project implements and compares multiple machine learning algorithms across three key domains:
+    classification, regression, and clustering.
+    """)
     
     col1, col2, col3 = st.columns(3)
     
@@ -552,19 +505,11 @@ def show_home():
 
 def show_classification():
     """Classification module - Australian Open Tennis"""
-    st.markdown('<div class="sub-header">🎾 Tennis Match Classification</div>', unsafe_allow_html=True)
+    st.header("🎾 Tennis Match Classification")
     
-    # Add attractive intro banner
     st.markdown("""
-    <div style='background: linear-gradient(135deg, #667eea 20%, #764ba2 80%); 
-                padding: 1.5rem; border-radius: 15px; color: white; margin-bottom: 1.5rem;
-                box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);'>
-        <h3 style='margin: 0; color: white;'>🏆 Predict Australian Open Match Winners</h3>
-        <p style='margin: 0.5rem 0 0 0; opacity: 0.95;'>
-        Using 5 powerful classification algorithms to predict whether the higher-ranked player will win
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    Predict whether the higher-ranked player will win an Australian Open match using 5 classification algorithms.
+    """)
     
     # Load data
     X, y, df = load_classification_data()
@@ -575,36 +520,23 @@ def show_classification():
     
     # Dataset info with enhanced cards
     with st.expander("📊 Dataset Information", expanded=False):
-        st.markdown("""
-        <div style='background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); 
-                    padding: 1rem; border-radius: 10px; margin-bottom: 1rem;'>
-            <h4 style='margin: 0; color: #2d3748;'>📈 Dataset Statistics</h4>
-        </div>
-        """, unsafe_allow_html=True)
-        
         col1, col2, col3 = st.columns(3)
-        col1.metric("Total Matches", len(X), delta="Ready for analysis")
-        col2.metric("Features", X.shape[1], delta="Engineered")
-        col3.metric("Class Balance", f"{(y.mean() * 100):.1f}% Yes", delta="Higher rank wins")
+        col1.metric("Total Matches", len(X))
+        col2.metric("Features", X.shape[1])
+        col3.metric("Higher Rank Wins", f"{(y.mean() * 100):.1f}%")
         
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("**Features:**")
         st.markdown("""
-        <div style='background: rgba(102, 126, 234, 0.1); padding: 1rem; border-radius: 10px; border-left: 4px solid #667eea;'>
-            <h4 style='color: #667eea; margin-top: 0;'>🏆 Feature Description</h4>
-            <ul style='color: #4a5568;'>
-                <li><strong>rank_gap_abs:</strong> Absolute ranking difference between players</li>
-                <li><strong>experience_gap_abs:</strong> Absolute experience difference (years as pro)</li>
-                <li><strong>height_gap_abs:</strong> Absolute height difference (cm)</li>
-                <li><strong>weight_gap_abs:</strong> Absolute weight difference (kg)</li>
-                <li><strong>same_handedness_bin:</strong> Whether both players have same playing hand (1=Yes, 0=No)</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
+        - **rank_gap_abs**: Ranking difference between players
+        - **experience_gap_abs**: Experience difference (years as pro)
+        - **height_gap_abs**: Height difference (cm)
+        - **weight_gap_abs**: Weight difference (kg)
+        - **same_handedness_bin**: Same playing hand (1=Yes, 0=No)
+        """)
     
     # Train models button with enhanced styling
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🚀 Train All Classification Models", key="train_class"):
-        with st.spinner("🔄 Training 5 classification models... Please wait"):
+    if st.button("Train All Classification Models", key="train_class"):
+        with st.spinner("Training 5 classification models..."):
             # Split data
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=0.20, random_state=RANDOM_STATE, stratify=y
@@ -619,10 +551,8 @@ def show_classification():
             probabilities = {}
             
             progress_bar = st.progress(0)
-            status_text = st.empty()
             
             for idx, (name, model) in enumerate(models.items()):
-                status_text.markdown(f"**Training:** {name}... ({idx + 1}/{len(models)})")
                 model.fit(X_train, y_train)
                 y_pred = model.predict(X_test)
                 y_prob = model.predict_proba(X_test)[:, 1]
@@ -641,29 +571,12 @@ def show_classification():
                 
                 progress_bar.progress((idx + 1) / len(models))
             
-            status_text.empty()
-            
-            # Display results with enhanced success message
-            st.markdown("""
-            <div style='background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); 
-                        padding: 1.5rem; border-radius: 15px; text-align: center; 
-                        box-shadow: 0 5px 15px rgba(132, 250, 176, 0.3); margin: 1rem 0;'>
-                <h3 style='color: white; margin: 0;'>✅ Training Complete!</h3>
-                <p style='color: white; margin: 0.5rem 0 0 0; opacity: 0.95;'>
-                All 5 models trained successfully. Review the results below.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+            # Display results
+            st.success("Training complete!")
             
             results_df = pd.DataFrame(results).sort_values('F1 Score', ascending=False)
             
-            st.markdown("""
-            <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                        padding: 1rem 1.5rem; border-radius: 10px; margin: 1.5rem 0 1rem 0;'>
-                <h3 style='color: white; margin: 0;'>📈 Model Performance Comparison</h3>
-            </div>
-            """, unsafe_allow_html=True)
-            
+            st.subheader("Model Performance Comparison")
             st.dataframe(
                 results_df.style.format({
                     'Accuracy': '{:.4f}',
@@ -671,103 +584,79 @@ def show_classification():
                     'Recall': '{:.4f}',
                     'F1 Score': '{:.4f}',
                     'ROC AUC': '{:.4f}'
-                }).highlight_max(subset=['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC'], color='lightgreen'),
+                }).highlight_max(subset=['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC'], color='#e6f3ff'),
                 use_container_width=True
             )
             
-            # Visualization with enhanced styling
-            st.markdown("<br>", unsafe_allow_html=True)
-            fig, ax = plt.subplots(figsize=(14, 7))
-            fig.patch.set_facecolor('#f8f9fa')
-            ax.set_facecolor('#ffffff')
+            # Visualization with professional styling
+            st.subheader("Performance Metrics")
+            fig, ax = plt.subplots(figsize=(12, 6))
+            fig.patch.set_facecolor('white')
+            ax.set_facecolor('white')
             
             results_df.set_index('Model')[['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC']].plot(
-                kind='bar', ax=ax, width=0.8, 
-                color=['#667eea', '#f093fb', '#764ba2', '#f5576c', '#19547b']
+                kind='bar', ax=ax, width=0.75, 
+                color=['#4299e1', '#48bb78', '#ed8936', '#9f7aea', '#f56565']
             )
-            ax.set_title('Classification Model Comparison - All Metrics', 
-                        fontsize=18, fontweight='bold', pad=20, color='#2d3748')
-            ax.set_ylabel('Score', fontsize=12, fontweight='bold')
-            ax.set_xlabel('Model', fontsize=12, fontweight='bold')
+            ax.set_title('Model Performance Comparison', fontsize=14, fontweight='600', pad=15, color='#2d3748')
+            ax.set_ylabel('Score', fontsize=11, fontweight='500')
+            ax.set_xlabel('')
             ax.set_ylim(0, 1.05)
-            ax.legend(title='Metrics', bbox_to_anchor=(1.02, 1), loc='upper left', 
-                     frameon=True, fancybox=True, shadow=True)
-            ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
+            ax.legend(title='Metrics', bbox_to_anchor=(1.02, 1), loc='upper left', frameon=True)
+            ax.grid(True, alpha=0.2, linestyle='-', linewidth=0.5, axis='y')
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
             plt.xticks(rotation=45, ha='right')
             plt.tight_layout()
             st.pyplot(fig)
             
-            # Confusion matrices with enhanced header
-            st.markdown("""
-            <div style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
-                        padding: 1rem 1.5rem; border-radius: 10px; margin: 1.5rem 0 1rem 0;'>
-                <h3 style='color: white; margin: 0;'>🎯 Confusion Matrices</h3>
-            </div>
-            """, unsafe_allow_html=True)
+            
+            # Confusion matrices
+            st.subheader("Confusion Matrices")
             cols = st.columns(3)
-            cmaps = ['Blues', 'Purples', 'Greens', 'Oranges', 'Reds']
+            cmaps = ['Blues', 'Greens', 'Purples', 'Oranges', 'Reds']
             for idx, (name, y_pred) in enumerate(predictions.items()):
                 with cols[idx % 3]:
-                    fig, ax = plt.subplots(figsize=(6, 5))
-                    fig.patch.set_facecolor('#f8f9fa')
+                    fig, ax = plt.subplots(figsize=(5, 4))
+                    fig.patch.set_facecolor('white')
                     cm = confusion_matrix(y_test, y_pred)
                     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['No', 'Yes'])
                     disp.plot(ax=ax, cmap=cmaps[idx], values_format='d')
-                    ax.set_title(f'{name}', fontweight='bold', fontsize=12, pad=10)
+                    ax.set_title(f'{name}', fontweight='500', fontsize=11, pad=10)
                     st.pyplot(fig)
             
-            # ROC Curves with enhanced header
-            st.markdown("""
-            <div style='background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
-                        padding: 1rem 1.5rem; border-radius: 10px; margin: 1.5rem 0 1rem 0;'>
-                <h3 style='color: #2d3748; margin: 0;'>📊 ROC Curves - Model Comparison</h3>
-            </div>
-            """, unsafe_allow_html=True)
-            fig, ax = plt.subplots(figsize=(12, 9))
-            fig.patch.set_facecolor('#f8f9fa')
-            ax.set_facecolor('#ffffff')
+            # ROC Curves
+            st.subheader("ROC Curves")
+            fig, ax = plt.subplots(figsize=(10, 7))
+            fig.patch.set_facecolor('white')
+            ax.set_facecolor('white')
             
-            colors = ['#667eea', '#f093fb', '#764ba2', '#f5576c', '#19547b']
+            colors = ['#4299e1', '#48bb78', '#9f7aea', '#ed8936', '#f56565']
             for idx, (name, y_prob) in enumerate(probabilities.items()):
-                RocCurveDisplay.from_predictions(y_test, y_prob, name=name, ax=ax, color=colors[idx], lw=2.5)
+                RocCurveDisplay.from_predictions(y_test, y_prob, name=name, ax=ax, lw=2, color=colors[idx])
             
-            ax.plot([0, 1], [0, 1], linestyle='--', label='Random baseline', color='gray', lw=2)
-            ax.set_title('ROC Curves - All Classification Models', fontsize=16, fontweight='bold', pad=20, color='#2d3748')
-            ax.set_xlabel('False Positive Rate', fontsize=12, fontweight='bold')
-            ax.set_ylabel('True Positive Rate', fontsize=12, fontweight='bold')
-            ax.legend(loc='lower right', frameon=True, fancybox=True, shadow=True, fontsize=10)
-            ax.grid(True, alpha=0.3, linestyle='--')
+            ax.plot([0, 1], [0, 1], linestyle='--', label='Random', color='gray', lw=1.5, alpha=0.7)
+            ax.set_title('ROC Curve Comparison', fontsize=14, fontweight='600', pad=15, color='#2d3748')
+            ax.set_xlabel('False Positive Rate', fontsize=11, fontweight='500')
+            ax.set_ylabel('True Positive Rate', fontsize=11, fontweight='500')
+            ax.legend(loc='lower right', frameon=True, fontsize=9)
+            ax.grid(True, alpha=0.2, linestyle='-', linewidth=0.5)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
             plt.tight_layout()
             st.pyplot(fig)
             
-            # Best model with trophy box
+            # Best model summary
             best_model = results_df.iloc[0]['Model']
             best_f1 = results_df.iloc[0]['F1 Score']
             best_acc = results_df.iloc[0]['Accuracy']
             best_roc = results_df.iloc[0]['ROC AUC']
             
-            st.markdown(f"""
-            <div style='background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%); 
-                        padding: 2rem; border-radius: 20px; text-align: center; 
-                        box-shadow: 0 10px 30px rgba(255, 216, 155, 0.4); margin: 2rem 0;'>
-                <h2 style='color: white; margin: 0; font-size: 2.5rem;'>🏆 Best Model</h2>
-                <h3 style='color: white; margin: 1rem 0;'>{best_model}</h3>
-                <div style='display: flex; justify-content: space-around; margin-top: 1.5rem;'>
-                    <div>
-                        <p style='color: rgba(255,255,255,0.8); margin: 0; font-size: 0.9rem;'>F1 Score</p>
-                        <p style='color: white; margin: 0; font-size: 1.8rem; font-weight: bold;'>{best_f1:.4f}</p>
-                    </div>
-                    <div>
-                        <p style='color: rgba(255,255,255,0.8); margin: 0; font-size: 0.9rem;'>Accuracy</p>
-                        <p style='color: white; margin: 0; font-size: 1.8rem; font-weight: bold;'>{best_acc:.4f}</p>
-                    </div>
-                    <div>
-                        <p style='color: rgba(255,255,255,0.8); margin: 0; font-size: 0.9rem;'>ROC AUC</p>
-                        <p style='color: white; margin: 0; font-size: 1.8rem; font-weight: bold;'>{best_roc:.4f}</p>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.success(f"**Best Model:** {best_model}")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("F1 Score", f"{best_f1:.4f}")
+            col2.metric("Accuracy", f"{best_acc:.4f}")
+            col3.metric("ROC AUC", f"{best_roc:.4f}")
 
 
 def show_regression():
