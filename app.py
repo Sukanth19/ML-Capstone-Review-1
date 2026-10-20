@@ -75,7 +75,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced CSS - MUCH MORE VISIBLE
+# Enhanced CSS - MUCH BETTER CONTRAST AND READABILITY
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -85,108 +85,115 @@ st.markdown("""
     }
     
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: #ffffff;
         padding: 2rem;
     }
     
     .main-header {
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 800;
-        color: #1a202c;
+        color: #111827;
         text-align: center;
         margin-bottom: 0.5rem;
         letter-spacing: -1px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
     
     .subtitle {
+        font-size: 1.2rem;
+        color: #4b5563;
         text-align: center;
-        font-size: 1.3rem;
-        color: #2d3748;
-        margin-bottom: 3rem;
-        font-weight: 600;
+        margin-bottom: 2rem;
+        font-weight: 500;
     }
     
+    /* Sidebar styling */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+    }
+    
+    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+        color: #f9fafb !important;
+    }
+    
+    section[data-testid="stSidebar"] h2 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+    
+    section[data-testid="stSidebar"] .stRadio label {
+        color: #f9fafb !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Better button styling */
     .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         color: white;
-        font-weight: 700;
-        font-size: 1.1rem;
         border: none;
         border-radius: 10px;
-        padding: 1rem 2.5rem;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        text-transform: uppercase;
-        letter-spacing: 1px;
     }
     
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
     }
     
-    [data-testid="stMetricValue"] {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #1a202c;
-    }
-    
-    [data-testid="stMetricLabel"] {
-        font-size: 1.1rem;
-        color: #2d3748;
-        font-weight: 600;
-    }
-    
+    /* Dataframe styling for better readability */
     .dataframe {
-        border: 2px solid #cbd5e0;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 0.95rem !important;
+        color: #1f2937 !important;
     }
     
     .dataframe thead th {
-        background-color: #4299e1;
-        color: white;
-        font-weight: 700;
-        font-size: 1.05rem;
-        padding: 12px;
-    }
-    
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    section[data-testid="stSidebar"] * {
+        background-color: #6366f1 !important;
         color: white !important;
-        font-weight: 600;
+        font-weight: 700 !important;
+        padding: 12px !important;
     }
     
-    .stRadio label {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #1a202c;
+    .dataframe tbody td {
+        color: #1f2937 !important;
+        padding: 10px !important;
+        font-weight: 500 !important;
     }
     
-    .stCheckbox label {
-        font-size: 1.05rem;
-        font-weight: 500;
-        color: #2d3748;
+    /* Info boxes */
+    .stAlert {
+        border-radius: 10px;
+        border-left: 5px solid #6366f1;
     }
     
-    h1, h2, h3, h4 {
-        color: #1a202c;
+    /* Headers */
+    h1, h2, h3 {
+        color: #111827 !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Better text contrast */
+    p, li, span, div {
+        color: #374151;
+    }
+    
+    /* Metric styling */
+    [data-testid="stMetricValue"] {
+        font-size: 2rem;
         font-weight: 700;
+        color: #111827;
     }
     
-    p, li {
-        color: #2d3748;
-        font-size: 1.05rem;
-        font-weight: 500;
-        line-height: 1.8;
+    [data-testid="stMetricLabel"] {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #4b5563;
     }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # ==================== DATA LOADING ====================
@@ -443,28 +450,20 @@ def show_home():
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
+    # Quick start guide
     st.markdown("""
-    <div style='background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); 
-                padding: 2rem; border-radius: 15px; margin: 2rem 0;
-                box-shadow: 0 5px 15px rgba(132, 250, 176, 0.3);'>
-        <h3 style='color: #1a202c; margin: 0; font-weight: 700;'>✨ Review 2 Compliance</h3>
-        <div style='margin-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;'>
-            <div>
-                <p style='margin: 0.5rem 0; color: #2d3748; font-weight: 600;'>✅ Section A: Classification Part B (6 marks)</p>
-                <p style='margin: 0.5rem 0; color: #2d3748; font-weight: 600;'>✅ Section B: Clustering Track (8 marks)</p>
-            </div>
-            <div>
-                <p style='margin: 0.5rem 0; color: #2d3748; font-weight: 600;'>✅ Section C: Pipeline Quality (3 marks)</p>
-                <p style='margin: 0.5rem 0; color: #2d3748; font-weight: 600;'>✅ Bonus: Interactive GUI (+1 mark)</p>
-            </div>
-        </div>
+    <div style='background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); 
+                padding: 1.5rem; border-radius: 15px; margin: 1rem 0;
+                box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);'>
+        <h3 style='color: white; margin: 0 0 1rem 0; font-weight: 700;'>🚀 Quick Start Guide</h3>
+        <p style='margin: 0.5rem 0; color: white; font-size: 1rem;'>
+        <strong>1.</strong> Select a module from the sidebar<br>
+        <strong>2.</strong> Choose individual models or run all at once<br>
+        <strong>3.</strong> View comprehensive results and visualizations<br>
+        <strong>4.</strong> Export or analyze the best performing models
+        </p>
     </div>
     """, unsafe_allow_html=True)
-
-
-# Continue in next message due to size...
-if __name__ == "__main__":
-    main()
 
 def show_classification_review2():
     """Classification with all 10 algorithms (Part A + Part B) - Review 2 compliant"""
