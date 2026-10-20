@@ -471,12 +471,17 @@ def show_classification_review2():
     st.header("🎯 Classification Analysis (Review 2)")
     
     st.markdown("""
-    **Review 2 Requirements:**
-    - Part A: 5 algorithms (Logistic, KNN, SVM, Decision Tree, Naive Bayes)
-    - Part B: 5 algorithms (Random Forest, AdaBoost, Gradient Boosting, Bagging, MLP)
-    - Individual model selection + Compare All option
-    - Complete metrics: Accuracy, Precision, Recall, F1, Confusion Matrix, ROC-AUC
-    """)
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 20px; border-radius: 10px; color: white; margin-bottom: 20px;">
+        <h3 style="margin:0; color: white;">📚 Review 2 Requirements</h3>
+        <p style="margin: 10px 0 0 0;">
+        ✅ Part A: 5 algorithms (Logistic, KNN, Naive Bayes, Decision Tree, SVM)<br>
+        ✅ Part B: 5 algorithms (Random Forest, AdaBoost, Gradient Boosting, Bagging, MLP)<br>
+        ✅ Individual model selection OR run all at once<br>
+        ✅ Complete metrics: Accuracy, Precision, Recall, F1, ROC-AUC, Confusion Matrix
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Load data
     try:
@@ -506,56 +511,60 @@ def show_classification_review2():
     # Get all models
     all_models, part_a, part_b = get_all_classification_models()
     
-    # Model selection
+    # Model selection interface
     st.subheader("🔧 Model Selection")
-    col1, col2, col3 = st.columns(3)
     
+    # Quick option to run all
+    col1, col2 = st.columns([3, 1])
     with col1:
-        st.markdown("**Part A Algorithms:**")
-        part_a_selected = st.multiselect(
-            "Select Part A models",
-            options=list(part_a.keys()),
-            default=[]
-        )
-    
+        st.markdown("**Choose your approach:**")
     with col2:
-        st.markdown("**Part B Algorithms:**")
-        part_b_selected = st.multiselect(
-            "Select Part B models",
-            options=list(part_b.keys()),
-            default=[]
-        )
+        run_all = st.checkbox("🚀 Run All 10 Models", value=False, help="Compare all algorithms at once")
     
-    with col3:
-        st.markdown("**Options:**")
-        compare_all = st.checkbox("Compare All 10 Models", value=False)
-    
-    if compare_all:
-        selected_models = all_models
-        st.info("📊 Comparing all 10 classification algorithms")
+    if not run_all:
+        st.markdown("**Or select individual models:**")
+        col_a, col_b = st.columns(2)
+        
+        with col_a:
+            st.markdown("**📘 Part A (Review 1)**")
+            part_a_selected = {}
+            for key in part_a.keys():
+                if st.checkbox(key, key=f"part_a_{key}"):
+                    part_a_selected[key] = part_a[key]
+        
+        with col_b:
+            st.markdown("**📗 Part B (Review 2)**")
+            part_b_selected = {}
+            for key in part_b.keys():
+                if st.checkbox(key, key=f"part_b_{key}"):
+                    part_b_selected[key] = part_b[key]
+        
+        selected_models = {**part_a_selected, **part_b_selected}
+        
+        if selected_models:
+            st.info(f"✅ Selected {len(selected_models)} model(s): {', '.join(selected_models.keys())}")
+        else:
+            st.warning("⚠️ Please select at least one model or check 'Run All 10 Models'")
+            return
     else:
-        selected_models = {}
-        for name in part_a_selected:
-            selected_models[name] = part_a[name]
-        for name in part_b_selected:
-            selected_models[name] = part_b[name]
-    
-    if not selected_models:
-        st.warning("⚠️ Please select at least one model or enable 'Compare All 10 Models'")
-        return
+        selected_models = all_models
+        st.success(f"✅ Running all {len(selected_models)} classification algorithms")
     
     # Train and evaluate
-    if st.button("🚀 Train Selected Models", type="primary"):
+    if st.button("🚀 Train and Evaluate Selected Models", type="primary", use_container_width=True):
+        st.markdown("---")
         results = []
+        models_trained = {}
         
         progress_bar = st.progress(0)
         status_text = st.empty()
         
         for idx, (name, model) in enumerate(selected_models.items()):
-            status_text.text(f"Training {name}...")
+            status_text.markdown(f"**Training:** {name} ({idx+1}/{len(selected_models)})...")
             
             try:
                 # Train
+                import time
                 start_time = time.time()
                 model.fit(X_train_scaled, y_train)
                 train_time = time.time() - start_time
@@ -580,113 +589,263 @@ def show_classification_review2():
                 
                 results.append({
                     'Model': name,
-                    'Accuracy': f"{accuracy:.4f}",
-                    'Precision': f"{precision:.4f}",
-                    'Recall': f"{recall:.4f}",
-                    'F1-Score': f"{f1:.4f}",
-                    'ROC-AUC': f"{roc_auc:.4f}" if roc_auc else "N/A",
-                    'Train Time (s)': f"{train_time:.3f}",
-                    'Model Object': model,
-                    'Predictions': y_pred,
-                    'Probabilities': y_proba
+                    'Accuracy': accuracy,
+                    'Precision': precision,
+                    'Recall': recall,
+                    'F1-Score': f1,
+                    'ROC-AUC': roc_auc if roc_auc else 0.0,
+                    'Train Time (s)': train_time,
+                    'Accuracy_fmt': f"{accuracy:.4f}",
+                    'Precision_fmt': f"{precision:.4f}",
+                    'Recall_fmt': f"{recall:.4f}",
+                    'F1_fmt': f"{f1:.4f}",
+                    'ROC_AUC_fmt': f"{roc_auc:.4f}" if roc_auc else "N/A",
+                    'Time_fmt': f"{train_time:.3f}",
                 })
                 
+                models_trained[name] = {
+                    'model': model,
+                    'predictions': y_pred,
+                    'probabilities': y_proba,
+                    'metrics': results[-1]
+                }
+                
             except Exception as e:
-                st.error(f"Error training {name}: {e}")
+                st.error(f"❌ Error training {name}: {e}")
             
             progress_bar.progress((idx + 1) / len(selected_models))
         
-        status_text.text("✅ Training complete!")
+        status_text.empty()
+        progress_bar.empty()
+        
+        if not results:
+            st.error("No models were successfully trained.")
+            return
+        
+        st.success(f"✅ Successfully trained {len(results)} model(s)!")
+        
+        # Sort by accuracy
+        results_sorted = sorted(results, key=lambda x: x['Accuracy'], reverse=True)
+        best_model = results_sorted[0]
+        
+        # Display best model prominently
+        st.markdown("---")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+                    padding: 30px; border-radius: 15px; text-align: center; 
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin: 20px 0;">
+            <h1 style="color: white; margin: 0; font-size: 2.5em;">🏆 BEST MODEL</h1>
+            <h2 style="color: white; margin: 10px 0; font-size: 2em;">{best_model['Model']}</h2>
+            <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 150px;">
+                    <div style="color: white; font-size: 0.9em;">Accuracy</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['Accuracy_fmt']}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 150px;">
+                    <div style="color: white; font-size: 0.9em;">F1-Score</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['F1_fmt']}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 150px;">
+                    <div style="color: white; font-size: 0.9em;">ROC-AUC</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['ROC_AUC_fmt']}</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Display results table
-        st.subheader("📈 Model Performance Comparison")
-        results_df = pd.DataFrame(results).drop(columns=['Model Object', 'Predictions', 'Probabilities'])
-        st.dataframe(results_df, use_container_width=True)
+        st.subheader("📊 Complete Performance Comparison")
         
-        # Best model
-        best_idx = max(range(len(results)), key=lambda i: float(results[i]['Accuracy']))
-        best_model_name = results[best_idx]['Model']
-        st.success(f"🏆 **Best Model:** {best_model_name} with Accuracy: {results[best_idx]['Accuracy']}")
+        display_df = pd.DataFrame([{
+            '🏅 Rank': idx + 1,
+            'Model': r['Model'],
+            'Accuracy': r['Accuracy_fmt'],
+            'Precision': r['Precision_fmt'],
+            'Recall': r['Recall_fmt'],
+            'F1-Score': r['F1_fmt'],
+            'ROC-AUC': r['ROC_AUC_fmt'],
+            'Train Time': r['Time_fmt']
+        } for idx, r in enumerate(results_sorted)])
         
-        # Detailed results for each model
-        st.subheader("📊 Detailed Model Results")
+        # Highlight best model
+        def highlight_best(row):
+            if row['🏅 Rank'] == 1:
+                return ['background-color: #d4edda; font-weight: bold'] * len(row)
+            return [''] * len(row)
         
-        for result in results:
-            with st.expander(f"🔍 {result['Model']} - Detailed Analysis"):
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown("**Performance Metrics:**")
-                    st.write(f"- Accuracy: {result['Accuracy']}")
-                    st.write(f"- Precision: {result['Precision']}")
-                    st.write(f"- Recall: {result['Recall']}")
-                    st.write(f"- F1-Score: {result['F1-Score']}")
-                    st.write(f"- ROC-AUC: {result['ROC-AUC']}")
-                    st.write(f"- Training Time: {result['Train Time (s)']} seconds")
-                
-                with col2:
-                    # Confusion Matrix
-                    st.markdown("**Confusion Matrix:**")
-                    cm = confusion_matrix(y_test, result['Predictions'])
-                    fig, ax = plt.subplots(figsize=(6, 4))
-                    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax)
-                    ax.set_xlabel('Predicted')
-                    ax.set_ylabel('Actual')
-                    ax.set_title(f'{result["Model"]} Confusion Matrix')
-                    st.pyplot(fig)
-                    plt.close()
-                
-                # ROC Curve
-                if result['Probabilities'] is not None:
-                    st.markdown("**ROC Curve:**")
-                    fpr, tpr, _ = roc_curve(y_test, result['Probabilities'])
-                    roc_auc = auc(fpr, tpr)
-                    
-                    fig, ax = plt.subplots(figsize=(8, 6))
-                    ax.plot(fpr, tpr, color='darkorange', linewidth=2, 
-                           label=f'ROC curve (AUC = {roc_auc:.2f})')
-                    ax.plot([0, 1], [0, 1], color='navy', linewidth=2, linestyle='--', label='Random Classifier')
-                    ax.set_xlim([0.0, 1.0])
-                    ax.set_ylim([0.0, 1.05])
-                    ax.set_xlabel('False Positive Rate')
-                    ax.set_ylabel('True Positive Rate')
-                    ax.set_title(f'{result["Model"]} ROC Curve')
-                    ax.legend(loc="lower right")
-                    ax.grid(alpha=0.3)
-                    st.pyplot(fig)
-                    plt.close()
+        styled_df = display_df.style.apply(highlight_best, axis=1)
+        st.dataframe(styled_df, use_container_width=True, height=400)
         
-        # Compare ROC curves
-        st.subheader("🎯 ROC Curves Comparison")
-        fig, ax = plt.subplots(figsize=(10, 8))
+        # Performance metrics visualization
+        st.subheader("📈 Performance Metrics Visualization")
         
-        for result in results:
-            if result['Probabilities'] is not None:
-                fpr, tpr, _ = roc_curve(y_test, result['Probabilities'])
-                roc_auc = auc(fpr, tpr)
-                ax.plot(fpr, tpr, linewidth=2, label=f'{result["Model"]} (AUC = {roc_auc:.2f})')
+        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
         
-        ax.plot([0, 1], [0, 1], 'k--', linewidth=2, label='Random Classifier')
-        ax.set_xlim([0.0, 1.0])
-        ax.set_ylim([0.0, 1.05])
-        ax.set_xlabel('False Positive Rate', fontsize=12)
-        ax.set_ylabel('True Positive Rate', fontsize=12)
-        ax.set_title('ROC Curves - All Models Comparison', fontsize=14, fontweight='bold')
-        ax.legend(loc="lower right")
-        ax.grid(alpha=0.3)
+        metrics_to_plot = ['Accuracy', 'Precision', 'Recall', 'F1-Score']
+        colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A']
+        
+        for idx, (metric, color) in enumerate(zip(metrics_to_plot, colors)):
+            ax = axes[idx // 2, idx % 2]
+            values = [r[metric] for r in results_sorted]
+            models = [r['Model'] for r in results_sorted]
+            
+            bars = ax.barh(models, values, color=color, alpha=0.8, edgecolor='black', linewidth=1.5)
+            
+            # Highlight best
+            bars[0].set_color('#2ECC71')
+            bars[0].set_edgecolor('gold')
+            bars[0].set_linewidth(3)
+            
+            ax.set_xlabel(metric, fontsize=12, fontweight='bold')
+            ax.set_title(f'{metric} Comparison', fontsize=14, fontweight='bold')
+            ax.set_xlim(0, 1.0)
+            ax.grid(axis='x', alpha=0.3)
+            
+            # Add value labels
+            for bar, value in zip(bars, values):
+                ax.text(value + 0.01, bar.get_y() + bar.get_height()/2, 
+                       f'{value:.3f}', va='center', fontsize=9)
+        
+        plt.tight_layout()
         st.pyplot(fig)
         plt.close()
+        
+        # Confusion matrices for top 3 models
+        st.subheader("🎯 Confusion Matrices (Top 3 Models)")
+        
+        top_3 = results_sorted[:min(3, len(results_sorted))]
+        cols = st.columns(3)
+        
+        for idx, result in enumerate(top_3):
+            model_name = result['Model']
+            y_pred = models_trained[model_name]['predictions']
+            
+            with cols[idx]:
+                fig, ax = plt.subplots(figsize=(6, 5))
+                cm = confusion_matrix(y_test, y_pred)
+                
+                # Choose colormap based on rank
+                cmap = 'Greens' if idx == 0 else 'Blues' if idx == 1 else 'Purples'
+                
+                disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+                disp.plot(ax=ax, cmap=cmap, colorbar=True)
+                
+                title = f"{'🥇' if idx == 0 else '🥈' if idx == 1 else '🥉'} {model_name}"
+                ax.set_title(title, fontsize=12, fontweight='bold', pad=10)
+                
+                plt.tight_layout()
+                st.pyplot(fig)
+                plt.close()
+                
+                st.metric("Accuracy", result['Accuracy_fmt'], 
+                         delta=None if idx == 0 else f"{result['Accuracy'] - top_3[0]['Accuracy']:.4f}")
+        
+        # ROC Curves for top 3
+        st.subheader("📉 ROC Curves (Top 3 Models)")
+        
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        colors_roc = ['#2ECC71', '#3498DB', '#9B59B6']
+        line_styles = ['-', '--', '-.']
+        
+        for idx, result in enumerate(top_3):
+            model_name = result['Model']
+            y_proba = models_trained[model_name]['probabilities']
+            
+            if y_proba is not None:
+                fpr, tpr, _ = roc_curve(y_test, y_proba)
+                roc_auc = result['ROC-AUC']
+                
+                label = f"{'🥇' if idx == 0 else '🥈' if idx == 1 else '🥉'} {model_name} (AUC = {roc_auc:.4f})"
+                ax.plot(fpr, tpr, color=colors_roc[idx], linestyle=line_styles[idx],
+                       linewidth=3 if idx == 0 else 2, label=label, marker='o' if idx == 0 else None,
+                       markersize=4 if idx == 0 else 0, markevery=10)
+        
+        ax.plot([0, 1], [0, 1], 'k--', linewidth=2, label='Random Classifier', alpha=0.5)
+        ax.set_xlabel('False Positive Rate', fontsize=12, fontweight='bold')
+        ax.set_ylabel('True Positive Rate', fontsize=12, fontweight='bold')
+        ax.set_title('ROC Curves - Top 3 Models', fontsize=14, fontweight='bold')
+        ax.legend(loc='lower right', fontsize=11, framealpha=0.9)
+        ax.grid(alpha=0.3)
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([0.0, 1.05])
+        
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+        
+        # Model insights
+        st.subheader("💡 Key Insights")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown(f"""
+            **Best Overall Model:**
+            - **{best_model['Model']}**
+            - Accuracy: {best_model['Accuracy_fmt']}
+            - Training time: {best_model['Time_fmt']}s
+            """)
+        
+        with col2:
+            fastest_model = min(results_sorted, key=lambda x: x['Train Time (s)'])
+            st.markdown(f"""
+            **Fastest Model:**
+            - **{fastest_model['Model']}**
+            - Time: {fastest_model['Time_fmt']}s
+            - Accuracy: {fastest_model['Accuracy_fmt']}
+            """)
+        
+        with col3:
+            if len(results_sorted) >= 3:
+                avg_accuracy = sum(r['Accuracy'] for r in results_sorted) / len(results_sorted)
+                st.markdown(f"""
+                **Overall Statistics:**
+                - Models trained: {len(results_sorted)}
+                - Average accuracy: {avg_accuracy:.4f}
+                - Best-Worst gap: {results_sorted[0]['Accuracy'] - results_sorted[-1]['Accuracy']:.4f}
+                """)
+        
+        # Recommendations
+        st.markdown("---")
+        st.subheader("🎯 Recommendations")
+        
+        if best_model['Accuracy'] >= 0.90:
+            recommendation = "🌟 **Excellent Performance!** Your best model shows outstanding accuracy. Consider deploying it."
+        elif best_model['Accuracy'] >= 0.80:
+            recommendation = "✅ **Good Performance!** The model performs well. You might try hyperparameter tuning for further improvement."
+        elif best_model['Accuracy'] >= 0.70:
+            recommendation = "⚠️ **Moderate Performance.** Consider feature engineering or trying different algorithms."
+        else:
+            recommendation = "🔴 **Low Performance.** Review your data quality, feature selection, and try different preprocessing."
+        
+        st.info(recommendation)
+        
+        # Hyperparameter tuning suggestion
+        if run_all or len(selected_models) > 1:
+            st.markdown(f"""
+            **Next Steps:**
+            - Fine-tune **{best_model['Model']}** with GridSearchCV
+            - Perform feature importance analysis
+            - Try ensemble methods combining top models
+            - Collect more data if possible
+            """)
 
 def show_regression():
-    """Regression with 10 algorithms"""
-    st.header("📈 Regression Analysis")
+    """Regression with 10 algorithms - Review 2 compliant"""
+    st.header("📈 Regression Analysis (Review 2)")
     
     st.markdown("""
-    **Regression Algorithms:**
-    - Linear Regression, Ridge, Lasso, ElasticNet, SVR
-    - Decision Tree, Random Forest, Gradient Boosting, AdaBoost, MLP
-    - Complete metrics: MSE, RMSE, MAE, R²
-    """)
+    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+                padding: 20px; border-radius: 10px; color: white; margin-bottom: 20px;">
+        <h3 style="margin:0; color: white;">📚 Regression Algorithms</h3>
+        <p style="margin: 10px 0 0 0;">
+        ✅ 10 algorithms: Linear, Ridge, Lasso, ElasticNet, SVR, Decision Tree, Random Forest, Gradient Boosting, AdaBoost, MLP<br>
+        ✅ Individual model selection OR run all at once<br>
+        ✅ Complete metrics: MSE, RMSE, MAE, R²
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Load data
     try:
@@ -720,42 +879,62 @@ def show_regression():
     # Get models
     all_models = get_regression_models()
     
-    # Model selection
+    # Model selection interface
     st.subheader("🔧 Model Selection")
-    col1, col2 = st.columns(2)
     
+    # Quick option to run all
+    col1, col2 = st.columns([3, 1])
     with col1:
-        selected_names = st.multiselect(
-            "Select regression models",
-            options=list(all_models.keys()),
-            default=[]
-        )
-    
+        st.markdown("**Choose your approach:**")
     with col2:
-        compare_all = st.checkbox("Compare All 10 Models", value=False)
+        run_all = st.checkbox("🚀 Run All 10 Models", value=False, help="Compare all algorithms at once")
     
-    if compare_all:
-        selected_models = all_models
-        st.info("📊 Comparing all 10 regression algorithms")
+    if not run_all:
+        st.markdown("**Or select individual models:**")
+        col_a, col_b = st.columns(2)
+        
+        with col_a:
+            st.markdown("**📘 Linear Models**")
+            linear_models = ['Linear Regression', 'Ridge', 'Lasso', 'ElasticNet', 'SVR']
+            linear_selected = {}
+            for key in linear_models:
+                if st.checkbox(key, key=f"linear_{key}"):
+                    linear_selected[key] = all_models[key]
+        
+        with col_b:
+            st.markdown("**📗 Tree & Neural Models**")
+            tree_models = ['Decision Tree', 'Random Forest', 'Gradient Boosting', 'AdaBoost', 'MLP Regressor']
+            tree_selected = {}
+            for key in tree_models:
+                if st.checkbox(key, key=f"tree_{key}"):
+                    tree_selected[key] = all_models[key]
+        
+        selected_models = {**linear_selected, **tree_selected}
+        
+        if selected_models:
+            st.info(f"✅ Selected {len(selected_models)} model(s): {', '.join(selected_models.keys())}")
+        else:
+            st.warning("⚠️ Please select at least one model or check 'Run All 10 Models'")
+            return
     else:
-        selected_models = {name: all_models[name] for name in selected_names}
-    
-    if not selected_models:
-        st.warning("⚠️ Please select at least one model or enable 'Compare All 10 Models'")
-        return
+        selected_models = all_models
+        st.success(f"✅ Running all {len(selected_models)} regression algorithms")
     
     # Train and evaluate
-    if st.button("🚀 Train Selected Models", type="primary"):
+    if st.button("🚀 Train and Evaluate Selected Models", type="primary", use_container_width=True):
+        st.markdown("---")
         results = []
+        models_trained = {}
         
         progress_bar = st.progress(0)
         status_text = st.empty()
         
         for idx, (name, model) in enumerate(selected_models.items()):
-            status_text.text(f"Training {name}...")
+            status_text.markdown(f"**Training:** {name} ({idx+1}/{len(selected_models)})...")
             
             try:
                 # Train
+                import time
                 start_time = time.time()
                 model.fit(X_train_scaled, y_train)
                 train_time = time.time() - start_time
@@ -771,45 +950,247 @@ def show_regression():
                 
                 results.append({
                     'Model': name,
-                    'MSE': f"{mse:.4f}",
-                    'RMSE': f"{rmse:.4f}",
-                    'MAE': f"{mae:.4f}",
-                    'R² Score': f"{r2:.4f}",
-                    'Train Time (s)': f"{train_time:.3f}",
-                    'Predictions': y_pred
+                    'MSE': mse,
+                    'RMSE': rmse,
+                    'MAE': mae,
+                    'R²': r2,
+                    'Train Time (s)': train_time,
+                    'MSE_fmt': f"{mse:.4f}",
+                    'RMSE_fmt': f"{rmse:.4f}",
+                    'MAE_fmt': f"{mae:.4f}",
+                    'R²_fmt': f"{r2:.4f}",
+                    'Time_fmt': f"{train_time:.3f}",
                 })
                 
+                models_trained[name] = {
+                    'model': model,
+                    'predictions': y_pred,
+                    'metrics': results[-1]
+                }
+                
             except Exception as e:
-                st.error(f"Error training {name}: {e}")
+                st.error(f"❌ Error training {name}: {e}")
             
             progress_bar.progress((idx + 1) / len(selected_models))
         
-        status_text.text("✅ Training complete!")
+        status_text.empty()
+        progress_bar.empty()
         
-        # Display results
-        st.subheader("📈 Model Performance Comparison")
-        results_df = pd.DataFrame(results).drop(columns=['Predictions'])
-        st.dataframe(results_df, use_container_width=True)
+        if not results:
+            st.error("No models were successfully trained.")
+            return
         
-        # Best model
-        best_idx = max(range(len(results)), key=lambda i: float(results[i]['R² Score']))
-        best_model_name = results[best_idx]['Model']
-        st.success(f"🏆 **Best Model:** {best_model_name} with R² Score: {results[best_idx]['R² Score']}")
+        st.success(f"✅ Successfully trained {len(results)} model(s)!")
         
-        # Predictions vs Actual
-        st.subheader("📊 Predictions vs Actual Values")
+        # Sort by R² (higher is better)
+        results_sorted = sorted(results, key=lambda x: x['R²'], reverse=True)
+        best_model = results_sorted[0]
         
-        for result in results:
-            with st.expander(f"🔍 {result['Model']} - Predictions Plot"):
-                fig, ax = plt.subplots(figsize=(10, 6))
-                ax.scatter(y_test, result['Predictions'], alpha=0.6, edgecolors='k')
-                ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
-                ax.set_xlabel('Actual Values')
-                ax.set_ylabel('Predicted Values')
-                ax.set_title(f'{result["Model"]} - Predictions vs Actual')
+        # Display best model prominently
+        st.markdown("---")
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    padding: 30px; border-radius: 15px; text-align: center; 
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin: 20px 0;">
+            <h1 style="color: white; margin: 0; font-size: 2.5em;">🏆 BEST MODEL</h1>
+            <h2 style="color: white; margin: 10px 0; font-size: 2em;">{best_model['Model']}</h2>
+            <div style="display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 130px; margin: 5px;">
+                    <div style="color: white; font-size: 0.9em;">R² Score</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['R²_fmt']}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 130px; margin: 5px;">
+                    <div style="color: white; font-size: 0.9em;">RMSE</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['RMSE_fmt']}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 130px; margin: 5px;">
+                    <div style="color: white; font-size: 0.9em;">MAE</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['MAE_fmt']}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; min-width: 130px; margin: 5px;">
+                    <div style="color: white; font-size: 0.9em;">Train Time</div>
+                    <div style="color: white; font-size: 1.8em; font-weight: bold;">{best_model['Time_fmt']}s</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Display results table
+        st.subheader("📊 Complete Performance Comparison")
+        
+        display_df = pd.DataFrame([{
+            '🏅 Rank': idx + 1,
+            'Model': r['Model'],
+            'R² Score': r['R²_fmt'],
+            'MSE': r['MSE_fmt'],
+            'RMSE': r['RMSE_fmt'],
+            'MAE': r['MAE_fmt'],
+            'Train Time': r['Time_fmt']
+        } for idx, r in enumerate(results_sorted)])
+        
+        # Highlight best model
+        def highlight_best(row):
+            if row['🏅 Rank'] == 1:
+                return ['background-color: #e7d4f7; font-weight: bold'] * len(row)
+            return [''] * len(row)
+        
+        styled_df = display_df.style.apply(highlight_best, axis=1)
+        st.dataframe(styled_df, use_container_width=True, height=400)
+        
+        # Performance metrics visualization
+        st.subheader("📈 Performance Metrics Visualization")
+        
+        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+        
+        metrics_to_plot = [
+            ('R²', [r['R²'] for r in results_sorted], '#2ECC71', 'higher is better'),
+            ('RMSE', [r['RMSE'] for r in results_sorted], '#E74C3C', 'lower is better'),
+            ('MAE', [r['MAE'] for r in results_sorted], '#F39C12', 'lower is better'),
+            ('MSE', [r['MSE'] for r in results_sorted], '#E67E22', 'lower is better')
+        ]
+        models = [r['Model'] for r in results_sorted]
+        
+        for idx, (metric, values, color, note) in enumerate(metrics_to_plot):
+            ax = axes[idx // 2, idx % 2]
+            
+            bars = ax.barh(models, values, color=color, alpha=0.8, edgecolor='black', linewidth=1.5)
+            
+            # Highlight best
+            bars[0].set_color('#9B59B6')
+            bars[0].set_edgecolor('gold')
+            bars[0].set_linewidth(3)
+            
+            ax.set_xlabel(metric, fontsize=12, fontweight='bold')
+            ax.set_title(f'{metric} Comparison ({note})', fontsize=14, fontweight='bold')
+            ax.grid(axis='x', alpha=0.3)
+            
+            # Add value labels
+            for bar, value in zip(bars, values):
+                ax.text(value + (max(values) * 0.01), bar.get_y() + bar.get_height()/2, 
+                       f'{value:.3f}', va='center', fontsize=9)
+        
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+        
+        # Predictions vs Actual for top 3 models
+        st.subheader("📊 Predictions vs Actual (Top 3 Models)")
+        
+        top_3 = results_sorted[:min(3, len(results_sorted))]
+        cols = st.columns(3)
+        
+        for idx, result in enumerate(top_3):
+            model_name = result['Model']
+            y_pred = models_trained[model_name]['predictions']
+            
+            with cols[idx]:
+                fig, ax = plt.subplots(figsize=(6, 5))
+                
+                # Choose color based on rank
+                color = '#9B59B6' if idx == 0 else '#3498DB' if idx == 1 else '#E74C3C'
+                
+                ax.scatter(y_test, y_pred, alpha=0.6, edgecolors='k', s=50, color=color)
+                ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 
+                       'r--', lw=3, label='Perfect Prediction')
+                
+                title = f"{'🥇' if idx == 0 else '🥈' if idx == 1 else '🥉'} {model_name}"
+                ax.set_title(title, fontsize=12, fontweight='bold', pad=10)
+                ax.set_xlabel('Actual Values', fontsize=10)
+                ax.set_ylabel('Predicted Values', fontsize=10)
                 ax.grid(alpha=0.3)
+                ax.legend(loc='best')
+                
+                plt.tight_layout()
                 st.pyplot(fig)
                 plt.close()
+                
+                st.metric("R² Score", result['R²_fmt'], 
+                         delta=None if idx == 0 else f"{result['R²'] - top_3[0]['R²']:.4f}")
+        
+        # Residual plot for best model
+        st.subheader("📉 Residual Analysis (Best Model)")
+        
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        
+        best_pred = models_trained[best_model['Model']]['predictions']
+        residuals = y_test - best_pred
+        
+        # Residual scatter plot
+        axes[0].scatter(best_pred, residuals, alpha=0.6, edgecolors='k', color='#9B59B6')
+        axes[0].axhline(y=0, color='r', linestyle='--', linewidth=2)
+        axes[0].set_xlabel('Predicted Values', fontsize=12, fontweight='bold')
+        axes[0].set_ylabel('Residuals', fontsize=12, fontweight='bold')
+        axes[0].set_title(f'{best_model["Model"]} - Residual Plot', fontsize=14, fontweight='bold')
+        axes[0].grid(alpha=0.3)
+        
+        # Residual histogram
+        axes[1].hist(residuals, bins=30, color='#9B59B6', alpha=0.7, edgecolor='black')
+        axes[1].axvline(x=0, color='r', linestyle='--', linewidth=2)
+        axes[1].set_xlabel('Residuals', fontsize=12, fontweight='bold')
+        axes[1].set_ylabel('Frequency', fontsize=12, fontweight='bold')
+        axes[1].set_title('Residual Distribution', fontsize=14, fontweight='bold')
+        axes[1].grid(alpha=0.3, axis='y')
+        
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+        
+        # Model insights
+        st.subheader("💡 Key Insights")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown(f"""
+            **Best Overall Model:**
+            - **{best_model['Model']}**
+            - R² Score: {best_model['R²_fmt']}
+            - Training time: {best_model['Time_fmt']}s
+            """)
+        
+        with col2:
+            fastest_model = min(results_sorted, key=lambda x: x['Train Time (s)'])
+            st.markdown(f"""
+            **Fastest Model:**
+            - **{fastest_model['Model']}**
+            - Time: {fastest_model['Time_fmt']}s
+            - R² Score: {fastest_model['R²_fmt']}
+            """)
+        
+        with col3:
+            if len(results_sorted) >= 3:
+                avg_r2 = sum(r['R²'] for r in results_sorted) / len(results_sorted)
+                st.markdown(f"""
+                **Overall Statistics:**
+                - Models trained: {len(results_sorted)}
+                - Average R²: {avg_r2:.4f}
+                - Best-Worst gap: {results_sorted[0]['R²'] - results_sorted[-1]['R²']:.4f}
+                """)
+        
+        # Recommendations
+        st.markdown("---")
+        st.subheader("🎯 Recommendations")
+        
+        if best_model['R²'] >= 0.90:
+            recommendation = "🌟 **Excellent Performance!** Your best model shows outstanding predictive power."
+        elif best_model['R²'] >= 0.75:
+            recommendation = "✅ **Good Performance!** The model explains most of the variance. Consider hyperparameter tuning."
+        elif best_model['R²'] >= 0.50:
+            recommendation = "⚠️ **Moderate Performance.** Consider feature engineering or trying different preprocessing techniques."
+        else:
+            recommendation = "🔴 **Low Performance.** Review your features, target variable, and consider collecting more data."
+        
+        st.info(recommendation)
+        
+        # Hyperparameter tuning suggestion
+        if run_all or len(selected_models) > 1:
+            st.markdown(f"""
+            **Next Steps:**
+            - Fine-tune **{best_model['Model']}** with GridSearchCV or RandomizedSearchCV
+            - Analyze feature importance and correlations
+            - Try polynomial features or interaction terms
+            - Check for outliers and data quality issues
+            """)
 
 def show_clustering_review2():
     """Clustering with K-Means and Hierarchical (Review 2)"""
