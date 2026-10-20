@@ -76,190 +76,188 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced CSS - MAXIMUM READABILITY
+# Enhanced CSS - Clean, Modern, Highly Readable
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
-    html, body, [class*="css"] {
+    * {
         font-family: 'Inter', sans-serif;
     }
     
+    /* Main container */
     .main {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 2rem;
     }
     
+    .main .block-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    /* Headers - Clear and visible */
     .main-header {
-        font-size: 3rem;
+        font-size: 2.8rem;
         font-weight: 800;
-        color: #000000;
+        color: #1a1a1a;
         text-align: center;
         margin-bottom: 0.5rem;
-        letter-spacing: -1px;
+        letter-spacing: -0.5px;
     }
     
     .subtitle {
-        font-size: 1.2rem;
-        color: #1a1a1a;
+        font-size: 1.15rem;
+        color: #4a5568;
         text-align: center;
         margin-bottom: 2rem;
-        font-weight: 600;
+        font-weight: 500;
     }
     
-    /* Sidebar styling */
+    /* Sidebar - Dark with excellent contrast */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+        background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
     }
     
-    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+    section[data-testid="stSidebar"] * {
         color: #ffffff !important;
-    }
-    
-    section[data-testid="stSidebar"] h2 {
-        color: #ffffff !important;
-        font-weight: 700 !important;
     }
     
     section[data-testid="stSidebar"] .stRadio label {
-        color: #ffffff !important;
         font-weight: 600 !important;
         font-size: 1rem !important;
+        padding: 8px 0 !important;
     }
     
-    /* Better button styling */
+    /* Headers in main content */
+    .main h1, .main h2, .main h3 {
+        color: #2d3748 !important;
+        font-weight: 700 !important;
+        margin-top: 1.5rem !important;
+    }
+    
+    .main h1 {
+        font-size: 2rem !important;
+    }
+    
+    .main h2 {
+        font-size: 1.75rem !important;
+    }
+    
+    .main h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Body text */
+    .main p, .main li, .main span, .main div {
+        color: #2d3748 !important;
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Buttons */
     .stButton>button {
-        background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
-        color: white;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
         border: none;
-        border-radius: 10px;
-        padding: 0.75rem 2rem;
-        font-weight: 700;
-        font-size: 1.05rem;
-        box-shadow: 0 4px 6px rgba(91, 33, 182, 0.3);
-        transition: all 0.3s ease;
+        border-radius: 8px;
+        padding: 0.65rem 1.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        transition: all 0.2s ease;
     }
     
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(91, 33, 182, 0.4);
-        background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
     }
     
-    /* Dataframe styling for MAXIMUM readability */
-    .dataframe {
-        font-size: 1rem !important;
-        color: #000000 !important;
-        font-weight: 500 !important;
-    }
-    
-    .dataframe thead th {
-        background-color: #5b21b6 !important;
-        color: white !important;
-        font-weight: 700 !important;
-        padding: 14px !important;
-        font-size: 1.05rem !important;
-    }
-    
-    .dataframe tbody td {
-        color: #000000 !important;
-        padding: 12px !important;
+    /* Checkboxes and Radio buttons */
+    .stCheckbox label, .stRadio label {
+        color: #2d3748 !important;
         font-weight: 600 !important;
-        border-bottom: 1px solid #e5e7eb !important;
-    }
-    
-    /* Info boxes */
-    .stAlert {
-        border-radius: 10px;
-        border-left: 5px solid #5b21b6;
-    }
-    
-    /* Headers - VERY DARK */
-    h1, h2, h3 {
-        color: #000000 !important;
-        font-weight: 800 !important;
-    }
-    
-    h4, h5, h6 {
-        color: #1a1a1a !important;
-        font-weight: 700 !important;
-    }
-    
-    /* Text - MAXIMUM CONTRAST */
-    p, li, span, div, label {
-        color: #1a1a1a !important;
-        font-weight: 500 !important;
-    }
-    
-    .stMarkdown p {
-        color: #000000 !important;
-        font-weight: 500 !important;
-        font-size: 1rem !important;
-    }
-    
-    /* Metric styling */
-    [data-testid="stMetricValue"] {
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: #000000;
-    }
-    
-    [data-testid="stMetricLabel"] {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1a1a1a;
-    }
-    
-    /* Checkbox and radio labels */
-    .stCheckbox label {
-        color: #000000 !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
-    }
-    
-    .stRadio label {
-        color: #000000 !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
     }
     
     /* Selectbox */
     .stSelectbox label {
-        color: #000000 !important;
+        color: #2d3748 !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Dataframes */
+    .dataframe {
+        font-size: 0.9rem !important;
+    }
+    
+    .dataframe thead th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 12px !important;
+        text-align: left !important;
+    }
+    
+    .dataframe tbody td {
+        color: #2d3748 !important;
+        padding: 10px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+    
+    .dataframe tbody tr:hover {
+        background-color: #f7fafc !important;
+    }
+    
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        font-size: 2rem !important;
         font-weight: 700 !important;
-        font-size: 1.05rem !important;
+        color: #2d3748 !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: #4a5568 !important;
+    }
+    
+    /* Info/Success/Warning/Error boxes */
+    .stAlert {
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    [data-testid="stMarkdownContainer"] p {
+        color: #2d3748 !important;
     }
     
     /* Expander */
     .streamlit-expanderHeader {
-        color: #000000 !important;
+        background-color: #f7fafc !important;
+        color: #2d3748 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Slider */
+    .stSlider label {
+        color: #2d3748 !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Make sure markdown content is visible */
+    .main [data-testid="stMarkdownContainer"] {
+        color: #2d3748 !important;
+    }
+    
+    .main [data-testid="stMarkdownContainer"] strong {
+        color: #1a202c !important;
         font-weight: 700 !important;
-        font-size: 1.05rem !important;
-    }
-    
-    /* Success/Info/Warning messages */
-    .stSuccess {
-        background-color: #d1fae5 !important;
-        color: #065f46 !important;
-        font-weight: 600 !important;
-    }
-    
-    .stInfo {
-        background-color: #dbeafe !important;
-        color: #1e40af !important;
-        font-weight: 600 !important;
-    }
-    
-    .stWarning {
-        background-color: #fef3c7 !important;
-        color: #92400e !important;
-        font-weight: 600 !important;
-    }
-    
-    .stError {
-        background-color: #fee2e2 !important;
-        color: #991b1b !important;
-        font-weight: 600 !important;
     }
 </style>
 """, unsafe_allow_html=True)
