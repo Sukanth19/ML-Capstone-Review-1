@@ -129,6 +129,38 @@ st.markdown("""
         font-weight: 600 !important;
         font-size: 1rem !important;
         padding: 8px 0 !important;
+        color: #ffffff !important;
+    }
+    
+    section[data-testid="stSidebar"] .stRadio > div {
+        color: #ffffff !important;
+    }
+    
+    section[data-testid="stSidebar"] label {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+    
+    section[data-testid="stSidebar"] p {
+        color: #ffffff !important;
+    }
+    
+    section[data-testid="stSidebar"] span {
+        color: #ffffff !important;
+    }
+    
+    section[data-testid="stSidebar"] div {
+        color: #ffffff !important;
+    }
+    
+    /* Radio button circles */
+    section[data-testid="stSidebar"] input[type="radio"] + div {
+        border-color: #ffffff !important;
+    }
+    
+    section[data-testid="stSidebar"] input[type="radio"]:checked + div {
+        background-color: #667eea !important;
+        border-color: #667eea !important;
     }
     
     /* Headers in main content */
