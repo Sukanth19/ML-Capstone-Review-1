@@ -482,28 +482,24 @@ def show_classification_review2():
     </div>
     """, unsafe_allow_html=True)
     
-    # Load data
-    try:
-        df = pd.read_csv('AustralianOpen.csv')
-        st.success(f"✅ Loaded {df.shape[0]} records with {df.shape[1]} features")
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
+    # Load data using proper function
+    X, y, working_df = load_classification_data()
+    
+    if X is None or y is None:
+        st.error("Failed to load classification data. Please check the dataset.")
         return
+    
+    st.success(f"✅ Loaded {len(X)} records with {X.shape[1]} features")
     
     # Data info
     with st.expander("📊 Dataset Overview"):
-        st.write(df.head())
-        st.write(f"**Shape:** {df.shape}")
-        st.write(f"**Columns:** {list(df.columns)}")
+        st.write(f"**Features:** {list(X.columns)}")
+        st.write(f"**Target distribution:**")
+        st.write(y.value_counts())
+        st.write(f"**Shape:** {X.shape}")
     
-    # Prepare data
-    X = df.drop('Won', axis=1)
-    y = df['Won']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=RANDOM_STATE)
     
     st.write(f"**Training set:** {X_train.shape[0]} samples | **Test set:** {X_test.shape[0]} samples")
     
@@ -562,15 +558,15 @@ def show_classification_review2():
             status_text.markdown(f"**Training:** {name} ({idx+1}/{len(selected_models)})...")
             
             try:
-                # Train
+                # Train (models are pipelines that handle their own preprocessing)
                 import time
                 start_time = time.time()
-                model.fit(X_train_scaled, y_train)
+                model.fit(X_train, y_train)
                 train_time = time.time() - start_time
                 
                 # Predict
-                y_pred = model.predict(X_test_scaled)
-                y_proba = model.predict_proba(X_test_scaled)[:, 1] if hasattr(model, 'predict_proba') else None
+                y_pred = model.predict(X_test)
+                y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
                 
                 # Metrics
                 accuracy = accuracy_score(y_test, y_pred)
@@ -611,6 +607,8 @@ def show_classification_review2():
                 
             except Exception as e:
                 st.error(f"❌ Error training {name}: {e}")
+                import traceback
+                st.code(traceback.format_exc())
             
             progress_bar.progress((idx + 1) / len(selected_models))
         
@@ -846,32 +844,24 @@ def show_regression():
     </div>
     """, unsafe_allow_html=True)
     
-    # Load data
-    try:
-        df = pd.read_csv('PGA2022.csv', encoding='latin1')
-        st.success(f"✅ Loaded {df.shape[0]} records with {df.shape[1]} features")
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
+    # Load data using proper function
+    X, y, working_df = load_regression_data()
+    
+    if X is None or y is None:
+        st.error("Failed to load regression data. Please check the dataset.")
         return
+    
+    st.success(f"✅ Loaded {len(X)} records with {X.shape[1]} features")
     
     # Data info
     with st.expander("📊 Dataset Overview"):
-        st.write(df.head())
-        st.write(f"**Shape:** {df.shape}")
-        st.write(f"**Columns:** {list(df.columns)}")
+        st.write(f"**Features:** {list(X.columns)}")
+        st.write(f"**Target (avgScore) statistics:**")
+        st.write(y.describe())
+        st.write(f"**Shape:** {X.shape}")
     
-    # Select target
-    target = st.selectbox("Select Target Variable", options=df.select_dtypes(include=[np.number]).columns.tolist())
-    
-    # Prepare data
-    X = df.drop(target, axis=1).select_dtypes(include=[np.number])
-    y = df[target]
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=RANDOM_STATE)
     
     st.write(f"**Training set:** {X_train.shape[0]} samples | **Test set:** {X_test.shape[0]} samples")
     
@@ -917,8 +907,7 @@ def show_regression():
             return
     else:
         selected_models = all_models
-        st.success(f"✅ Running all {len(selected_models)} regression algorithms")
-    
+        st.success(f"✅ Running all {len(selected_models)} regression algorithms")    
     # Train and evaluate
     if st.button("🚀 Train and Evaluate Selected Models", type="primary", use_container_width=True):
         st.markdown("---")
@@ -932,14 +921,14 @@ def show_regression():
             status_text.markdown(f"**Training:** {name} ({idx+1}/{len(selected_models)})...")
             
             try:
-                # Train
+                # Train (models are pipelines that handle their own preprocessing)
                 import time
                 start_time = time.time()
-                model.fit(X_train_scaled, y_train)
+                model.fit(X_train, y_train)
                 train_time = time.time() - start_time
                 
                 # Predict
-                y_pred = model.predict(X_test_scaled)
+                y_pred = model.predict(X_test)
                 
                 # Metrics
                 mse = mean_squared_error(y_test, y_pred)
@@ -969,6 +958,8 @@ def show_regression():
                 
             except Exception as e:
                 st.error(f"❌ Error training {name}: {e}")
+                import traceback
+                st.code(traceback.format_exc())
             
             progress_bar.progress((idx + 1) / len(selected_models))
         
