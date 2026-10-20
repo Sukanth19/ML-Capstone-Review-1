@@ -53,9 +53,10 @@ from sklearn.neural_network import MLPClassifier
 # Regression
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor
 from sklearn.svm import SVR
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neural_network import MLPRegressor
 
 # Clustering
 from sklearn.cluster import KMeans, AgglomerativeClustering
@@ -75,7 +76,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Enhanced CSS - MUCH BETTER CONTRAST AND READABILITY
+# Enhanced CSS - MAXIMUM READABILITY
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -85,14 +86,14 @@ st.markdown("""
     }
     
     .main {
-        background: #ffffff;
+        background: #f8f9fa;
         padding: 2rem;
     }
     
     .main-header {
         font-size: 3rem;
         font-weight: 800;
-        color: #111827;
+        color: #000000;
         text-align: center;
         margin-bottom: 0.5rem;
         letter-spacing: -1px;
@@ -100,19 +101,19 @@ st.markdown("""
     
     .subtitle {
         font-size: 1.2rem;
-        color: #4b5563;
+        color: #1a1a1a;
         text-align: center;
         margin-bottom: 2rem;
-        font-weight: 500;
+        font-weight: 600;
     }
     
     /* Sidebar styling */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+        background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
     }
     
     section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
-        color: #f9fafb !important;
+        color: #ffffff !important;
     }
     
     section[data-testid="stSidebar"] h2 {
@@ -121,75 +122,144 @@ st.markdown("""
     }
     
     section[data-testid="stSidebar"] .stRadio label {
-        color: #f9fafb !important;
-        font-weight: 500 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
     }
     
     /* Better button styling */
     .stButton>button {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
         color: white;
         border: none;
         border-radius: 10px;
         padding: 0.75rem 2rem;
-        font-weight: 600;
-        font-size: 1rem;
-        box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+        font-weight: 700;
+        font-size: 1.05rem;
+        box-shadow: 0 4px 6px rgba(91, 33, 182, 0.3);
         transition: all 0.3s ease;
     }
     
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 6px 12px rgba(91, 33, 182, 0.4);
+        background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
     }
     
-    /* Dataframe styling for better readability */
+    /* Dataframe styling for MAXIMUM readability */
     .dataframe {
-        font-size: 0.95rem !important;
-        color: #1f2937 !important;
+        font-size: 1rem !important;
+        color: #000000 !important;
+        font-weight: 500 !important;
     }
     
     .dataframe thead th {
-        background-color: #6366f1 !important;
+        background-color: #5b21b6 !important;
         color: white !important;
         font-weight: 700 !important;
-        padding: 12px !important;
+        padding: 14px !important;
+        font-size: 1.05rem !important;
     }
     
     .dataframe tbody td {
-        color: #1f2937 !important;
-        padding: 10px !important;
-        font-weight: 500 !important;
+        color: #000000 !important;
+        padding: 12px !important;
+        font-weight: 600 !important;
+        border-bottom: 1px solid #e5e7eb !important;
     }
     
     /* Info boxes */
     .stAlert {
         border-radius: 10px;
-        border-left: 5px solid #6366f1;
+        border-left: 5px solid #5b21b6;
     }
     
-    /* Headers */
+    /* Headers - VERY DARK */
     h1, h2, h3 {
-        color: #111827 !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+    }
+    
+    h4, h5, h6 {
+        color: #1a1a1a !important;
         font-weight: 700 !important;
     }
     
-    /* Better text contrast */
-    p, li, span, div {
-        color: #374151;
+    /* Text - MAXIMUM CONTRAST */
+    p, li, span, div, label {
+        color: #1a1a1a !important;
+        font-weight: 500 !important;
+    }
+    
+    .stMarkdown p {
+        color: #000000 !important;
+        font-weight: 500 !important;
+        font-size: 1rem !important;
     }
     
     /* Metric styling */
     [data-testid="stMetricValue"] {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #111827;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #000000;
     }
     
     [data-testid="stMetricLabel"] {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #4b5563;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    
+    /* Checkbox and radio labels */
+    .stCheckbox label {
+        color: #000000 !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
+    
+    .stRadio label {
+        color: #000000 !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Selectbox */
+    .stSelectbox label {
+        color: #000000 !important;
+        font-weight: 700 !important;
+        font-size: 1.05rem !important;
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        color: #000000 !important;
+        font-weight: 700 !important;
+        font-size: 1.05rem !important;
+    }
+    
+    /* Success/Info/Warning messages */
+    .stSuccess {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        font-weight: 600 !important;
+    }
+    
+    .stInfo {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+        font-weight: 600 !important;
+    }
+    
+    .stWarning {
+        background-color: #fef3c7 !important;
+        color: #92400e !important;
+        font-weight: 600 !important;
+    }
+    
+    .stError {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+        font-weight: 600 !important;
     }
 </style>
 """, unsafe_allow_html=True)
