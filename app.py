@@ -884,18 +884,20 @@ def show_regression():
         
         with col_a:
             st.markdown("**📘 Linear Models**")
-            linear_models = ['Linear Regression', 'Ridge', 'Lasso', 'ElasticNet', 'SVR']
+            linear_models = ['1. Linear Regression', '2. Ridge', '3. Lasso', '4. ElasticNet', '9. SVR']
             linear_selected = {}
             for key in linear_models:
-                if st.checkbox(key, key=f"linear_{key}"):
+                display_name = key.split('. ', 1)[1]  # Remove number prefix for display
+                if st.checkbox(display_name, key=f"linear_{key}"):
                     linear_selected[key] = all_models[key]
         
         with col_b:
             st.markdown("**📗 Tree & Neural Models**")
-            tree_models = ['Decision Tree', 'Random Forest', 'Gradient Boosting', 'AdaBoost', 'MLP Regressor']
+            tree_models = ['6. Decision Tree', '7. Random Forest', '8. Gradient Boosting', '5. Polynomial', '10. KNN']
             tree_selected = {}
             for key in tree_models:
-                if st.checkbox(key, key=f"tree_{key}"):
+                display_name = key.split('. ', 1)[1]  # Remove number prefix for display
+                if st.checkbox(display_name, key=f"tree_{key}"):
                     tree_selected[key] = all_models[key]
         
         selected_models = {**linear_selected, **tree_selected}
@@ -1199,24 +1201,33 @@ def show_clustering_review2():
     
     try:
         if "Classification" in dataset:
-            df = pd.read_csv('AustralianOpen.csv')
-            target_col = 'Won'
+            # Use classification data loading function
+            X, y, working_df = load_classification_data()
+            if X is None:
+                st.error("Failed to load classification data")
+                return
+            st.success(f"✅ Loaded {len(X)} records with {X.shape[1]} features from Australian Open dataset")
         else:
-            df = pd.read_csv('PGA2022.csv')
-            target_col = st.selectbox("Select target column to exclude", df.columns.tolist())
+            # Use regression data loading function
+            X, y, working_df = load_regression_data()
+            if X is None:
+                st.error("Failed to load regression data")
+                return
+            st.success(f"✅ Loaded {len(X)} records with {X.shape[1]} features from PGA 2022 dataset")
         
-        st.success(f"✅ Loaded {df.shape[0]} records with {df.shape[1]} features")
-        
-        # Prepare data
-        X = df.drop(target_col, axis=1).select_dtypes(include=[np.number])
-        
+        # Scale the data
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
         
         st.write(f"**Features:** {X.shape[1]} | **Samples:** {X.shape[0]}")
         
+        with st.expander("📊 Dataset Features"):
+            st.write(f"**Feature columns:** {list(X.columns)}")
+        
     except Exception as e:
         st.error(f"Error loading data: {e}")
+        import traceback
+        st.code(traceback.format_exc())
         return
     
     # Clustering parameters
