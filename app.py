@@ -225,15 +225,48 @@ st.markdown("""
         color: #4a5568 !important;
     }
     
-    /* Info/Success/Warning/Error boxes */
+    /* Info/Success/Warning/Error boxes - WHITE TEXT */
     .stAlert {
         border-radius: 8px;
         padding: 1rem;
         margin: 1rem 0;
     }
     
+    .stSuccess, .stSuccess * {
+        background-color: #059669 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+    
+    .stInfo, .stInfo * {
+        background-color: #3b82f6 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+    
+    .stWarning, .stWarning * {
+        background-color: #f59e0b !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+    
+    .stError, .stError * {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Markdown in colored boxes */
     [data-testid="stMarkdownContainer"] p {
         color: #2d3748 !important;
+    }
+    
+    /* But white text in alert boxes */
+    .stAlert [data-testid="stMarkdownContainer"] p,
+    .stAlert [data-testid="stMarkdownContainer"] li,
+    .stAlert [data-testid="stMarkdownContainer"] strong,
+    .stAlert [data-testid="stMarkdownContainer"] span {
+        color: #ffffff !important;
     }
     
     /* Expander */
@@ -258,6 +291,24 @@ st.markdown("""
     .main [data-testid="stMarkdownContainer"] strong {
         color: #1a202c !important;
         font-weight: 700 !important;
+    }
+    
+    /* Custom HTML divs with gradients - force white text */
+    .main div[style*="linear-gradient"] {
+        color: white !important;
+    }
+    
+    .main div[style*="linear-gradient"] * {
+        color: white !important;
+    }
+    
+    .main div[style*="linear-gradient"] h1,
+    .main div[style*="linear-gradient"] h2,
+    .main div[style*="linear-gradient"] h3,
+    .main div[style*="linear-gradient"] p,
+    .main div[style*="linear-gradient"] span,
+    .main div[style*="linear-gradient"] li {
+        color: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
