@@ -1348,10 +1348,18 @@ def show_clustering_review2():
     """)
     
     # Dataset selection
-    dataset = st.radio("Select Dataset", ["Australian Open (Classification)", "PGA 2022 (Regression)"])
+    dataset = st.radio("Select Dataset", ["WTA Grand Slam Matches (2018-2022)", "Australian Open (Classification)", "PGA 2022 (Regression)"])
     
     try:
-        if "Classification" in dataset:
+        if "WTA Grand Slam" in dataset:
+            # Load WTA Grand Slam dataset
+            df = pd.read_csv('wta-grand-slam-matches-2018to2022.csv')
+            # Select only numerical features for clustering
+            X = df.select_dtypes(include=[np.number]).dropna()
+            y = None  # No labels for this dataset
+            working_df = df
+            st.success(f"✅ Loaded {len(X)} records with {X.shape[1]} features from WTA Grand Slam dataset")
+        elif "Classification" in dataset:
             # Use classification data loading function
             X, y, working_df = load_classification_data()
             if X is None:
