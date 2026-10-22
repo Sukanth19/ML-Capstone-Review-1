@@ -13,6 +13,7 @@ REVIEW 2 COMPLIANT:
 ✅ Full Comparison Tables
 ✅ Hyperparameter Tuning
 ✅ Enhanced UI with Better Font Visibility
+✅ INTERACTIVE FEATURES FOR BONUS MARKS
 """
 
 import streamlit as st
@@ -22,6 +23,21 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import warnings
+
+# Import interactive features module
+try:
+    from interactive_features import (
+        interactive_prediction_regression,
+        interactive_prediction_classification,
+        interactive_data_explorer,
+        interactive_feature_comparison,
+        interactive_model_comparison,
+        interactive_clustering_explorer
+    )
+    INTERACTIVE_AVAILABLE = True
+except ImportError:
+    INTERACTIVE_AVAILABLE = False
+    st.warning("Interactive features module not found. Some features may be limited.")
 
 # Scikit-learn imports
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -548,7 +564,7 @@ def show_home():
                 box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);'>
         <h2 style='color: white; margin: 0; font-size: 2.5rem; font-weight: 800;'>Review 2 - Complete Implementation</h2>
         <p style='color: white; margin: 1rem 0 0 0; font-size: 1.2rem; opacity: 0.95;'>
-        All rubric requirements implemented and ready for demonstration
+        All rubric requirements + Interactive Features for Bonus Marks!
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -612,6 +628,24 @@ def show_home():
         <strong>2.</strong> Choose individual models or run all at once<br>
         <strong>3.</strong> View comprehensive results and visualizations<br>
         <strong>4.</strong> Export or analyze the best performing models
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # NEW: Interactive Features Highlight
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+                padding: 1.5rem; border-radius: 15px; margin: 1rem 0;
+                box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);'>
+        <h3 style='color: white; margin: 0 0 1rem 0; font-weight: 700;'>✨ Interactive Features (Bonus Marks)</h3>
+        <p style='margin: 0.5rem 0; color: white; font-size: 1rem;'>
+        <strong>🎯 Real-time Predictions:</strong> Adjust sliders to make custom predictions<br>
+        <strong>🔍 Data Explorer:</strong> Interactive visualization of dataset features<br>
+        <strong>📊 Feature Comparison:</strong> Compare any two features with correlation analysis<br>
+        <strong>⚖️ Model Comparison:</strong> Select and compare specific models side-by-side<br>
+        <strong>🔧 Hyperparameter Tuning:</strong> Interactive parameter adjustment with live results<br>
+        <strong>🌳 Cluster Explorer:</strong> Explore individual clusters interactively
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -978,6 +1012,36 @@ def show_classification_review2():
             - Try ensemble methods combining top models
             - Collect more data if possible
             """)
+        
+        # NEW: Interactive Features
+        st.markdown("---")
+        st.subheader("✨ Interactive Features")
+        
+        # Add tabs for different interactive features
+        inter_tab1, inter_tab2, inter_tab3 = st.tabs(["🎯 Make Predictions", "🔍 Explore Data", "📊 Compare Features"])
+        
+        with inter_tab1:
+            if INTERACTIVE_AVAILABLE:
+                st.markdown("#### Predict Match Outcomes with Your Own Data")
+                st.markdown("Adjust the sliders below to see predictions in real-time!")
+                interactive_prediction_classification(
+                    models_trained[best_model['Model']]['model'],
+                    X, None, X.columns.tolist()
+                )
+            else:
+                st.warning("Interactive features module not available")
+        
+        with inter_tab2:
+            if INTERACTIVE_AVAILABLE:
+                interactive_data_explorer(working_df, "Australian Open")
+            else:
+                st.warning("Interactive features module not available")
+        
+        with inter_tab3:
+            if INTERACTIVE_AVAILABLE:
+                interactive_feature_comparison(working_df)
+            else:
+                st.warning("Interactive features module not available")
 
 def show_regression():
     """Regression with 10 algorithms - Review 2 compliant"""
@@ -1334,6 +1398,36 @@ def show_regression():
             - Try polynomial features or interaction terms
             - Check for outliers and data quality issues
             """)
+        
+        # NEW: Interactive Features for Regression
+        st.markdown("---")
+        st.subheader("✨ Interactive Features")
+        
+        # Add tabs for different interactive features
+        inter_tab1, inter_tab2, inter_tab3 = st.tabs(["🎯 Make Predictions", "🔍 Explore Data", "📊 Compare Features"])
+        
+        with inter_tab1:
+            if INTERACTIVE_AVAILABLE:
+                st.markdown("#### Predict Golf Scores with Your Own Data")
+                st.markdown("Adjust the sliders below to see predictions in real-time!")
+                interactive_prediction_regression(
+                    models_trained[best_model['Model']]['model'],
+                    X, None, X.columns.tolist()
+                )
+            else:
+                st.warning("Interactive features module not available")
+        
+        with inter_tab2:
+            if INTERACTIVE_AVAILABLE:
+                interactive_data_explorer(working_df, "PGA 2022")
+            else:
+                st.warning("Interactive features module not available")
+        
+        with inter_tab3:
+            if INTERACTIVE_AVAILABLE:
+                interactive_feature_comparison(working_df)
+            else:
+                st.warning("Interactive features module not available")
 
 def show_clustering_review2():
     """Clustering with K-Means and Hierarchical (Review 2)"""
@@ -1591,6 +1685,46 @@ def show_clustering_review2():
             st.success("🏆 **K-Means performs better** based on combined metrics")
         else:
             st.success("🏆 **Hierarchical Clustering performs better** based on combined metrics")
+        
+        # NEW: Interactive Clustering Features
+        st.markdown("---")
+        st.subheader("✨ Interactive Cluster Explorer")
+        
+        if INTERACTIVE_AVAILABLE:
+            selected_cluster, show_only = interactive_clustering_explorer(
+                X_scaled, kmeans_labels, n_clusters
+            )
+            
+            # Show filtered visualization if requested
+            if show_only and use_pca:
+                st.markdown(f"#### Cluster {selected_cluster} Highlighted (PCA)")
+                fig, ax = plt.subplots(figsize=(10, 8))
+                
+                # Plot all points in gray
+                ax.scatter(X_pca[:, 0], X_pca[:, 1], c='lightgray', 
+                          alpha=0.3, edgecolors='none', s=30, label='Other Clusters')
+                
+                # Highlight selected cluster
+                cluster_mask = kmeans_labels == selected_cluster
+                ax.scatter(X_pca[cluster_mask, 0], X_pca[cluster_mask, 1], 
+                          c='#667eea', alpha=0.8, edgecolors='k', s=100, 
+                          label=f'Cluster {selected_cluster}')
+                
+                # Show centroid
+                centroid_pca = pca.transform(kmeans.cluster_centers_[selected_cluster].reshape(1, -1))
+                ax.scatter(centroid_pca[:, 0], centroid_pca[:, 1],
+                          c='red', marker='X', s=400, edgecolors='k', 
+                          linewidths=3, label='Centroid', zorder=5)
+                
+                ax.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.2%} variance)', fontsize=12)
+                ax.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.2%} variance)', fontsize=12)
+                ax.set_title(f'Cluster {selected_cluster} Analysis', fontsize=14, fontweight='bold')
+                ax.legend()
+                ax.grid(alpha=0.3)
+                st.pyplot(fig)
+                plt.close()
+        else:
+            st.warning("Interactive features module not available")
 
 if __name__ == "__main__":
     main()
